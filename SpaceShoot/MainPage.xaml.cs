@@ -40,6 +40,9 @@ public partial class MainPage : ContentPage
         GameCanvas.GestureRecognizers.Add(panGesture);
 
         // Keep tap gesture for shooting
+        var tapGesture = new TapGestureRecognizer();
+        tapGesture.Tapped += OnCanvasTapped;
+        GameCanvas.GestureRecognizers.Add(tapGesture);
 
         // Setup game loop timer using DispatcherTimer (60 FPS)
         gameTimer = Dispatcher.CreateTimer();
@@ -96,10 +99,21 @@ public partial class MainPage : ContentPage
         if (!isGameRunning) return;
 
         // Update all bullets
-        
+        for (int i = bullets.Count - 1; i >= 0; i--)
+        {
+            bullets[i].Update();
+            AbsoluteLayout.SetLayoutBounds(bullets[i].Visual,
+                new Rect(bullets[i].X - 3, bullets[i].Y - 10, 6, 20));
+            if (!bullets[i].IsOnScreen(canvasWidth, canvasHeight))
+            {
+                GameCanvas.Children.Remove(bullets[i].Visual);
+                bullets.RemoveAt(i);
+            }
+        }
 
         // Update all enemies
-        for (int i = enemies.Count - 1; i >= 0; i--) {
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
             enemies[i].Update(canvasWidth, canvasHeight);
 
             // Update enemy position
@@ -110,7 +124,8 @@ public partial class MainPage : ContentPage
 
             // Check collision with player
             if (CheckCollision(player.X, player.Y, player.Size,
-                             enemies[i].X, enemies[i].Y, enemies[i].Size)) {
+                             enemies[i].X, enemies[i].Y, enemies[i].Size))
+            {
                 GameCanvas.Children.Remove(enemies[i].Visual);
                 enemies.RemoveAt(i);
                 LoseLife();
@@ -197,7 +212,9 @@ public partial class MainPage : ContentPage
         if (!isGameRunning) return;
 
         // Tap to shoot in direction of tap
+        Point pt = (Point)e.GetPosition(GameCanvas);
 
+        ShootTowards(pt.X, pt.Y);
     }
 
     private void MovePlayer(double targetX, double targetY) {
@@ -211,6 +228,19 @@ public partial class MainPage : ContentPage
 
         // Calculate direction to tap point
         double dx = targetX - player.X;
+        double dy = targetY - player.Y; 
+
+        // Normalise direction - Make it have length 1
+        double length = Math.Sqrt(dx * dx + dy * dy);
+
+        dx = dx / length;
+        dy = dy / length;
+
+        Bullet bullet = new Bullet(player.X, player.Y, dx, dy);
+        bullets.Add(bullet);
+        GameCanvas.Children.Add(bullet.Visual);
+        AbsoluteLayout.SetLayoutBounds(bullet.Visual,
+            new Rect(bullet.X - 3, bullet.Y - 10, 6, 20));
     }
 
     private bool CheckCollision(double x1, double y1, double size1,
