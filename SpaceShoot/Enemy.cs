@@ -37,8 +37,7 @@
         // The enemy moves in its current direction and periodically changes direction.
         public void Update(double screenWidth, double screenHeight) {
             // Move in current direction
-            X += velocityX;
-            Y += velocityY;
+
 
             // Bounce off walls
             if (X < Size / 2 || X > screenWidth - Size / 2) {

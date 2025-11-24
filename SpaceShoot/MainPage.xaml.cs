@@ -79,7 +79,7 @@ public partial class MainPage : ContentPage
         GameOverOverlay.IsVisible = false;
         StartButton.IsEnabled = false;
         gameTimer.Start();
-        //enemySpawnTimer.Start();
+        enemySpawnTimer.Start();
 
         UpdateUI();
 
@@ -229,7 +229,7 @@ public partial class MainPage : ContentPage
     }
 
     private void UpdateUI() {
-
+        LivesLabel.Text = $"Lives: {lives}";
     }
 
     private void EndGame() {
