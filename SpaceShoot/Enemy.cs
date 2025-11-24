@@ -5,28 +5,57 @@
         public double X { get; private set; }
         public double Y { get; private set; }
         public double Size { get; private set; } = 30;
-        public BoxView Visual { get; private set; }
+       // public BoxView Visual { get; private set; }
+       public Image Visual { get; private set; }
+        public int Health { get; set; } = 1;
+        public int Score { get; private set; } = 10;
 
         private double velocityX;
         private double velocityY;
         private double speed = 2.0;
         private Random random = new Random();
         private DateTime lastDirectionChange;
-        private int directionChangeInterval = 2000; // Change direction every 2 seconds
+        private int directionChangeInterval = 2000;
+        private int howManyChanges = 0;
+        private bool isBoss = false;
+        // Change direction every 2 seconds
 
         // Creates a new enemy at the specified position.
         // The enemy will have a random initial direction.
-        public Enemy(double x, double y) {
+        public Enemy(double x, double y, bool boss = false)
+        {
             X = x;
             Y = y;
             lastDirectionChange = DateTime.Now;
             // Create visual representation
-            Visual = new BoxView
+            /* Visual = new BoxView
+             {
+                 Color = Colors.Red ,
+                 WidthRequest = Size,
+                 HeightRequest = Size,
+                 CornerRadius = Size/2 // Make it circular
+             };*/
+            string source;
+            if (!boss)
             {
-                Color = Colors.Red ,
+                int which = Random.Shared.Next(1, 4);
+                source = $"alien{which}.png";
+            }
+            else
+            {
+                Health = 5;
+                source = "monster.png";
+                Size *= 2;
+                isBoss = true;
+                speed = 3.5;
+                Score = 100;
+            }
+
+            Visual = new Image
+            {
+                Source = source,
                 WidthRequest = Size,
                 HeightRequest = Size,
-                CornerRadius = Size/2 // Make it circular
             };
 
             // Set random initial direction
@@ -66,6 +95,15 @@
             // Convert to velocity components
             velocityX = Math.Cos(angle) * speed;
             velocityY = Math.Sin(angle) * speed;
+
+            if (!isBoss)
+            {
+                ++howManyChanges;
+                if (howManyChanges % 2 == 0)
+                {
+                    speed += 1;
+                }
+            }
         }
 
 

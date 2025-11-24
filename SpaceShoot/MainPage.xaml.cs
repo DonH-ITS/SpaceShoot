@@ -16,6 +16,7 @@ public partial class MainPage : ContentPage
     private double canvasHeight;
     private double lastPanX = 0;
     private double lastPanY = 0;
+    private int howManyEnemiesSpawned;
 
     public int Score
     {
@@ -74,7 +75,8 @@ public partial class MainPage : ContentPage
         if (isGameRunning) return;
 
         isGameRunning = true;
-        score = 0;
+        Score = 0;
+        howManyEnemiesSpawned = 0;
         lives = 3;
         enemies.Clear();
         bullets.Clear();
@@ -133,7 +135,22 @@ public partial class MainPage : ContentPage
             }
 
             // Check collision with bullets
-
+            for(int j = bullets.Count -1; j >= 0; j--)
+            {
+                if (CheckCollision(enemies[i].X, enemies[i].Y, enemies[i].Size,
+                            bullets[j].X, bullets[j].Y, 13))
+                {
+                    GameCanvas.Children.Remove(bullets[j].Visual);
+                    bullets.RemoveAt(j);
+                    if (--enemies[i].Health == 0)
+                    {
+                        Score += enemies[i].Score;
+                        GameCanvas.Children.Remove(enemies[i].Visual);
+                        enemies.RemoveAt(i);   
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -166,9 +183,16 @@ public partial class MainPage : ContentPage
                 y = rand.NextDouble() * canvasHeight;
                 break;
         }
-
+        ++howManyEnemiesSpawned;
         Enemy enemy;
-        enemy = new Enemy(x, y);
+        if(howManyEnemiesSpawned % 10 == 0)
+        {
+            enemy = new Enemy(x, y, true);
+        }
+        else
+        {
+            enemy = new Enemy(x, y);
+        }
         enemies.Add(enemy);
         GameCanvas.Children.Add(enemy.Visual);
         AbsoluteLayout.SetLayoutBounds(enemy.Visual,
@@ -268,6 +292,16 @@ public partial class MainPage : ContentPage
         enemySpawnTimer?.Stop();
 
         GameOverOverlay.IsVisible = true;
+        int highScore = Preferences.Get("HighScore", 0);
+        if(Score > highScore)
+        {
+            HighScoreLbl.Text = $"Congratulations! New High Score: {Score}";
+            Preferences.Set("HighScore", Score);
+        }
+        else
+        {
+            HighScoreLbl.Text = $"You failed to beat the high score! {highScore}";
+        }
     }
 
     private void OnPlayAgainClicked(object sender, EventArgs e) {

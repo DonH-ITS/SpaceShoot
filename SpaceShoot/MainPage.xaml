@@ -51,6 +51,9 @@
                    HorizontalOptions="End"/>
         </Grid>
 
+        <Image Source="space.jpg" Aspect="Fill" Grid.Row="1"
+               ZIndex="-1"/>
+
         <!-- Game Canvas -->
         <AbsoluteLayout x:Name="GameCanvas" 
                        Grid.Row="1">
@@ -68,6 +71,11 @@
                 <Label Text="GAME OVER" 
                        TextColor="Red" 
                        FontSize="48" 
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                <Label x:Name="HighScoreLbl" 
+                       TextColor="White"
+                       FontSize="24"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>
                 <Button Text="PLAY AGAIN"
