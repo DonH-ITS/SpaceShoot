@@ -47,6 +47,12 @@ public partial class MainPage : ContentPage
         gameTimer.Tick += OnGameTick;
         gameTimer.IsRepeating = true;
 
+        enemySpawnTimer = Dispatcher.CreateTimer();
+        enemySpawnTimer.Interval = TimeSpan.FromSeconds(2);
+        enemySpawnTimer.Tick += OnEnemySpawn;
+        
+
+
     }
 
     protected override void OnSizeAllocated(double width, double height) {
