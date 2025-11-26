@@ -129,7 +129,18 @@ public partial class MainPage : ContentPage
             }
 
             // Check collision with bullets
-
+            for (int j = bullets.Count - 1; j >= 0; j--){
+                if (CheckCollision(enemies[i].X, enemies[i].Y, enemies[i].Size,
+                                   bullets[j].X, bullets[j].Y, 13))
+                {
+                    GameCanvas.Children.Remove(enemies[i].Visual);
+                    enemies.RemoveAt(i);
+                    GameCanvas.Children.Remove(bullets[j].Visual);
+                    bullets.RemoveAt(j);
+                    Score += 10;
+                    break;
+                }
+            }
         }
     }
 
