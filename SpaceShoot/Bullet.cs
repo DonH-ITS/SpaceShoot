@@ -22,8 +22,8 @@
                 Color = Colors.Yellow, 
                 CornerRadius = 3
             };
-            velocityX = directionX;
-            velocityY = directionY;
+            velocityX = directionX*speed;
+            velocityY = directionY*speed;
         }
 
 
