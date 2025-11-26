@@ -46,6 +46,10 @@ public partial class MainPage : ContentPage
         gameTimer.Interval = TimeSpan.FromMilliseconds(16);
         gameTimer.Tick += OnGameTick;
         gameTimer.IsRepeating = true;
+        enemySpawnTimer = Dispatcher.CreateTimer();
+        enemySpawnTimer.Interval = TimeSpan.FromSeconds(2);
+        enemySpawnTimer.Tick += OnEnemySpawn;
+        enemySpawnTimer.IsRepeating = true;
 
     }
 
@@ -65,7 +69,7 @@ public partial class MainPage : ContentPage
         if (isGameRunning) return;
 
         isGameRunning = true;
-        score = 0;
+        Score = 0;
         lives = 3;
         enemies.Clear();
         bullets.Clear();
@@ -73,7 +77,7 @@ public partial class MainPage : ContentPage
         GameOverOverlay.IsVisible = false;
         StartButton.IsEnabled = false;
         gameTimer.Start();
-        //enemySpawnTimer.Start();
+        enemySpawnTimer.Start();
 
         UpdateUI();
 
