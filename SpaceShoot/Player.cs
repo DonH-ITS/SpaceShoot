@@ -6,7 +6,8 @@ namespace SpaceShoot
         public double X { get; private set; }
         public double Y { get; private set; }
         public double Size { get; private set; } = 60;
-        public BoxView Visual { get; private set; }
+        // public BoxView Visual { get; private set; }
+        public Image Visual { get; private set; }
 
         public double Rotation
         {
@@ -21,12 +22,18 @@ namespace SpaceShoot
             Y = y;
 
 
-            Visual = new BoxView
+            /* Visual = new BoxView
+             {
+                 Color = Colors.Cyan,
+                 WidthRequest = Size,
+                 HeightRequest = Size,
+                 CornerRadius = 5
+             };*/
+            Visual = new Image()
             {
-                Color = Colors.Cyan,
+                Source = "ship2.png",
                 WidthRequest = Size,
                 HeightRequest = Size,
-                CornerRadius = 5
             };
         }
 

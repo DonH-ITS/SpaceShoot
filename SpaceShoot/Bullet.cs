@@ -24,6 +24,9 @@
             };
             velocityX = directionX*speed;
             velocityY = directionY*speed;
+
+            double rotation = Math.Atan2(directionY, directionX) * 180/Math.PI;
+            Visual.Rotation = rotation + 90;
         }
 
 
