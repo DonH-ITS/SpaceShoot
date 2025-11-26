@@ -47,7 +47,7 @@ namespace SpaceShoot
 
         // Rotates the player to a specified angle in degrees.
         public void RotatePlayer(double angle) {
-            Visual.Rotation = angle;
+            Visual.Rotation = angle + 90;
         }
     }
 }

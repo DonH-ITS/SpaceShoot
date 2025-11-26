@@ -7,17 +7,19 @@
         public double Size { get; private set; } = 30;
         // public BoxView Visual { get; private set; }
         public Image Visual { get; private set; }
-
+        public int Health { get; set; } = 1;
+        public int Points { get; private set; } = 10;
         private double velocityX;
         private double velocityY;
         private double speed = 2.0;
         private Random random = new Random();
         private DateTime lastDirectionChange;
         private int directionChangeInterval = 2000; // Change direction every 2 seconds
+        private int howManyChanges; 
 
         // Creates a new enemy at the specified position.
         // The enemy will have a random initial direction.
-        public Enemy(double x, double y) {
+        public Enemy(double x, double y, bool boss = false) {
             X = x;
             Y = y;
             lastDirectionChange = DateTime.Now;
@@ -29,46 +31,37 @@
                   HeightRequest = Size,
                   CornerRadius = Size/2 // Make it circular
               };*/
-            int whichAlien = random.Next(1, 4);
-            string alienImg = $"alien{whichAlien}.png";
+            string alienImg;
+            if (boss)
+            {
+                alienImg = "monster.png";
+                Size *= 3;
+                speed = 3.5;
+                Health = 3;
+                Points = 50;
+            }
+            else
+            {
+                int whichAlien = random.Next(1, 4);
+                alienImg = $"alien{whichAlien}.png";
+            }
+                
             Visual = new Image()
             {
                 Source = alienImg,
                 WidthRequest = Size,
                 HeightRequest = Size
             };
-
+            howManyChanges = 0;
             // Set random initial direction
             ChangeDirection();
         }
-
-        // Updates the enemy's position. Should be called every frame.
-        // The enemy moves in its current direction and periodically changes direction.
-        public void Update(double screenWidth, double screenHeight) {
-            // Move in current direction
-            X += velocityX;
-            Y += velocityY;
-
-            // Bounce off walls
-            if (X < Size / 2 || X > screenWidth - Size / 2) {
-                velocityX = -velocityX;
-                X = Math.Clamp(X, Size / 2, screenWidth - Size / 2);
-            }
-
-            if (Y < Size / 2 || Y > screenHeight - Size / 2) {
-                velocityY = -velocityY;
-                Y = Math.Clamp(Y, Size / 2, screenHeight - Size / 2);
-            }
-
-            // Periodically change direction for more interesting movement
-            if ((DateTime.Now - lastDirectionChange).TotalMilliseconds > directionChangeInterval) {
-                ChangeDirection();
-                lastDirectionChange = DateTime.Now;
-            }
-        }
+            
 
         // Changes the enemy's direction to a new random direction.
         private void ChangeDirection() {
+            if (++howManyChanges % 5 == 0)
+                speed += 1;
             // Generate random angle
             double angle = random.NextDouble() * 2 * Math.PI;
 
@@ -77,6 +70,35 @@
             velocityY = Math.Sin(angle) * speed;
         }
 
+
+        // Updates the enemy's position. Should be called every frame.
+        // The enemy moves in its current direction and periodically changes direction.
+        public void Update(double screenWidth, double screenHeight)
+        {
+            // Move in current direction
+            X += velocityX;
+            Y += velocityY;
+
+            // Bounce off walls
+            if (X < Size / 2 || X > screenWidth - Size / 2)
+            {
+                velocityX = -velocityX;
+                X = Math.Clamp(X, Size / 2, screenWidth - Size / 2);
+            }
+
+            if (Y < Size / 2 || Y > screenHeight - Size / 2)
+            {
+                velocityY = -velocityY;
+                Y = Math.Clamp(Y, Size / 2, screenHeight - Size / 2);
+            }
+
+            // Periodically change direction for more interesting movement
+            if ((DateTime.Now - lastDirectionChange).TotalMilliseconds > directionChangeInterval)
+            {
+                ChangeDirection();
+                lastDirectionChange = DateTime.Now;
+            }
+        }
 
         // Alternative update method: Makes the enemy move towards a target (like the player).
         // Maybe different types of enemies could use this behaviour.

@@ -9,6 +9,7 @@ public partial class MainPage : ContentPage
 
     private int score = 0;
     private int lives = 3;
+    private int howManyEnemies = 0;
     private bool isGameRunning = false;
 
     private const int MaxBullets = 5;
@@ -74,6 +75,7 @@ public partial class MainPage : ContentPage
         isGameRunning = true;
         Score = 0;
         lives = 3;
+        howManyEnemies = 0;
         enemies.Clear();
         bullets.Clear();
         GameCanvas.Children.Clear();
@@ -133,11 +135,14 @@ public partial class MainPage : ContentPage
                 if (CheckCollision(enemies[i].X, enemies[i].Y, enemies[i].Size,
                                    bullets[j].X, bullets[j].Y, 13))
                 {
-                    GameCanvas.Children.Remove(enemies[i].Visual);
-                    enemies.RemoveAt(i);
+                    if (--enemies[i].Health == 0)
+                    {
+                        Score += enemies[i].Points;
+                        GameCanvas.Children.Remove(enemies[i].Visual);
+                        enemies.RemoveAt(i);
+                    }
                     GameCanvas.Children.Remove(bullets[j].Visual);
-                    bullets.RemoveAt(j);
-                    Score += 10;
+                    bullets.RemoveAt(j);    
                     break;
                 }
             }
@@ -175,7 +180,14 @@ public partial class MainPage : ContentPage
         }
 
         Enemy enemy;
-        enemy = new Enemy(x, y);
+        if (++howManyEnemies % 8 == 0)
+        {
+            enemy = new Enemy(x, y, true);
+        }
+        else
+        {
+            enemy = new Enemy(x, y);
+        }
         enemies.Add(enemy);
         GameCanvas.Children.Add(enemy.Visual);
         // Some adjustment so x,y are the centre of the enemy
@@ -239,6 +251,8 @@ public partial class MainPage : ContentPage
         bullet = new Bullet(player.X, player.Y, dx, dy);
         bullets.Add(bullet);
         GameCanvas.Children.Add(bullet.Visual);
+        double rotation = Math.Atan2(dy, dx) * 180 / Math.PI;
+        player.RotatePlayer(rotation);
         // Some adjustment so x,y are the centre of the enemy
         AbsoluteLayout.SetLayoutBounds(bullet.Visual,
             new Rect(bullet.X - 3, bullet.Y - 10, 6, 20));
