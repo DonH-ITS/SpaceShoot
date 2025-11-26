@@ -195,26 +195,40 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void OnCanvasTapped(object sender, TappedEventArgs e) {
+    private void OnCanvasTapped(object sender, TappedEventArgs e) { 
         if (!isGameRunning) return;
 
         // Tap to shoot in direction of tap
-
+        Point pt = (Point)e.GetPosition(GameCanvas);
+        ShootTowards(pt.X, pt.Y);
     }
-
-    private void MovePlayer(double targetX, double targetY) {
-        player.MoveTo(targetX, targetY);
-        AbsoluteLayout.SetLayoutBounds(player.Visual,
-            new Rect(player.X - player.Size / 2, player.Y - player.Size / 2, player.Size, player.Size));
-    }
-
     private void ShootTowards(double targetX, double targetY) {
         if (bullets.Count >= MaxBullets) return;
 
         // Calculate direction to tap point
         double dx = targetX - player.X;
+        double dy = targetY - player.Y;
+
+        // Normalise the direction
+        double length = Math.Sqrt(dx * dx + dy * dy);
+        dx /= length;
+        dy /= length;
+
+        Bullet bullet;
+        bullet = new Bullet(player.X, player.Y, dx, dy);
+        bullets.Add(bullet);
+        GameCanvas.Children.Add(bullet.Visual);
+        // Some adjustment so x,y are the centre of the enemy
+        AbsoluteLayout.SetLayoutBounds(bullet.Visual,
+            new Rect(bullet.X - 3, bullet.Y - 10, 6, 20));
     }
 
+    private void MovePlayer(double targetX, double targetY)
+    {
+        player.MoveTo(targetX, targetY);
+        AbsoluteLayout.SetLayoutBounds(player.Visual,
+            new Rect(player.X - player.Size / 2, player.Y - player.Size / 2, player.Size, player.Size));
+    }
     private bool CheckCollision(double x1, double y1, double size1,
                                double x2, double y2, double size2) {
         double distance = Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
