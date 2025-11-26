@@ -154,6 +154,7 @@ public partial class MainPage : ContentPage
         enemy = new Enemy(x, y);
         enemies.Add(enemy);
         GameCanvas.Children.Add(enemy.Visual);
+        // Some adjustment so x,y are the centre of the enemy
         AbsoluteLayout.SetLayoutBounds(enemy.Visual,
             new Rect(enemy.X - enemy.Size / 2, enemy.Y - enemy.Size / 2, enemy.Size, enemy.Size));
     }
