@@ -46,7 +46,10 @@ public partial class MainPage : ContentPage
         gameTimer.Interval = TimeSpan.FromMilliseconds(16);
         gameTimer.Tick += OnGameTick;
         gameTimer.IsRepeating = true;
-
+        enemySpawnTimer = Dispatcher.CreateTimer();
+        enemySpawnTimer.Interval = TimeSpan.FromSeconds(2);
+        enemySpawnTimer.Tick += OnEnemySpawn;
+        enemySpawnTimer.IsRepeating = true;
     }
 
     protected override void OnSizeAllocated(double width, double height) {
@@ -73,7 +76,7 @@ public partial class MainPage : ContentPage
         GameOverOverlay.IsVisible = false;
         StartButton.IsEnabled = false;
         gameTimer.Start();
-        //enemySpawnTimer.Start();
+        enemySpawnTimer.Start();
 
         UpdateUI();
 
@@ -223,7 +226,7 @@ public partial class MainPage : ContentPage
     }
 
     private void UpdateUI() {
-
+        LivesLabel.Text = $"Lives: {lives}";
     }
 
     private void EndGame() {
