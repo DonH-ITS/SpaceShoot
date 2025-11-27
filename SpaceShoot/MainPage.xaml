@@ -50,7 +50,7 @@
                    VerticalOptions="Center"
                    HorizontalOptions="End"/>
         </Grid>
-
+        <Image Source="space.jpg" Aspect="Fill" Grid.Row="1" ZIndex="-1"/>
         <!-- Game Canvas -->
         <AbsoluteLayout x:Name="GameCanvas" 
                        Grid.Row="1">
