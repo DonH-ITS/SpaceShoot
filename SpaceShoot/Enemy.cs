@@ -5,7 +5,8 @@
         public double X { get; private set; }
         public double Y { get; private set; }
         public double Size { get; private set; } = 30;
-        public BoxView Visual { get; private set; }
+        // public BoxView Visual { get; private set; }
+        public Image Visual { get; private set; }
 
         private double velocityX;
         private double velocityY;
@@ -21,12 +22,20 @@
             Y = y;
             lastDirectionChange = DateTime.Now;
             // Create visual representation
-            Visual = new BoxView
+            /* Visual = new BoxView
+             {
+                 Color = Colors.Red ,
+                 WidthRequest = Size,
+                 HeightRequest = Size,
+                 CornerRadius = Size/2 // Make it circular
+             };*/
+            int whichAlien = random.Next(1, 4);
+            string imgSrc = $"alien{whichAlien}.png";
+            Visual = new Image()
             {
-                Color = Colors.Red ,
+                Source = imgSrc,
                 WidthRequest = Size,
                 HeightRequest = Size,
-                CornerRadius = Size/2 // Make it circular
             };
 
             // Set random initial direction

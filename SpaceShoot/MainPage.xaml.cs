@@ -96,10 +96,25 @@ public partial class MainPage : ContentPage
         if (!isGameRunning) return;
 
         // Update all bullets
-        
+        for (int i = bullets.Count - 1; i >= 0; i--)
+        {
+            bullets[i].Update();
+
+            // Update enemy position
+            AbsoluteLayout.SetLayoutBounds(bullets[i].Visual,
+                new Rect(bullets[i].X - 3,
+                         bullets[i].Y - 10,
+                         6, 20));
+            if (!bullets[i].IsOnScreen(canvasWidth, canvasHeight))
+            {
+                GameCanvas.Children.Remove(bullets[i].Visual);
+                bullets.RemoveAt(i);
+            }
+        }
 
         // Update all enemies
-        for (int i = enemies.Count - 1; i >= 0; i--) {
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
             enemies[i].Update(canvasWidth, canvasHeight);
 
             // Update enemy position
@@ -110,7 +125,8 @@ public partial class MainPage : ContentPage
 
             // Check collision with player
             if (CheckCollision(player.X, player.Y, player.Size,
-                             enemies[i].X, enemies[i].Y, enemies[i].Size)) {
+                             enemies[i].X, enemies[i].Y, enemies[i].Size))
+            {
                 GameCanvas.Children.Remove(enemies[i].Visual);
                 enemies.RemoveAt(i);
                 LoseLife();
@@ -118,6 +134,18 @@ public partial class MainPage : ContentPage
             }
 
             // Check collision with bullets
+            for (int j = bullets.Count - 1; j >= 0; j--)
+            {
+                if (CheckCollision(bullets[j].X, bullets[j].Y, 13, enemies[i].X, enemies[i].Y, enemies[i].Size))
+                {
+                    GameCanvas.Children.Remove(enemies[i].Visual);
+                    enemies.RemoveAt(i);
+                    GameCanvas.Children.Remove(bullets[j].Visual);
+                    bullets.RemoveAt(j);
+                    Score += 10;
+                    break;
+                }
+            }
 
         }
     }
@@ -222,6 +250,8 @@ public partial class MainPage : ContentPage
         GameCanvas.Children.Add(bullet.Visual);
         AbsoluteLayout.SetLayoutBounds(bullet.Visual,
             new Rect(bullet.X - 3, bullet.Y - 10, 6, 20));
+        double angle = Math.Atan2(dy, dx) * 180 / Math.PI;
+        player.RotatePlayer(angle + 90);
     }
 
     private bool CheckCollision(double x1, double y1, double size1,
