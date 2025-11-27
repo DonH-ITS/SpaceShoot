@@ -77,7 +77,7 @@ public partial class MainPage : ContentPage
 
         UpdateUI();
 
-        // Create player in center
+        // Create player in centre
         player = new Player(canvasWidth / 2, canvasHeight / 2);
         GameCanvas.Children.Add(player.Visual);
         AbsoluteLayout.SetLayoutBounds(player.Visual,
@@ -167,8 +167,8 @@ public partial class MainPage : ContentPage
             case GestureStatus.Running: {
                     // Only move by the *change* in pan, not the total
                     // Divide by 2 to reduce sensitivity
-                    double deltaX = (e.TotalX - lastPanX)/2;
-                    double deltaY = (e.TotalY - lastPanY)/2;
+                    double deltaX = (e.TotalX - lastPanX) / 2;
+                    double deltaY = (e.TotalY - lastPanY) / 2;
 
                     lastPanX = e.TotalX;
                     lastPanY = e.TotalY;
