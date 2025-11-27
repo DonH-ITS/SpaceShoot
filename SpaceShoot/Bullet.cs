@@ -13,7 +13,8 @@
         public Bullet(double x, double y, double directionX, double directionY) {
             X = x;
             Y = y;
-
+            velocityX = directionX * speed;
+            velocityY = directionY * speed;
             // Create visual representation
             Visual = new BoxView
             {
@@ -28,7 +29,8 @@
         // Updates the bullet's position. Should be called every frame.
         // The bullet moves in a straight line at constant speed.
         public void Update() {
-
+            X += velocityX;
+            Y += velocityY; 
         }
 
 
