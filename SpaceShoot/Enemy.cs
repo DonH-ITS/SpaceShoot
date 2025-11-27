@@ -7,6 +7,8 @@
         public double Size { get; private set; } = 30;
         // public BoxView Visual { get; private set; }
         public Image Visual { get; private set; }
+        public int Health { get; set; } = 1;
+        public int Points { get; private set; } = 10;
 
         private double velocityX;
         private double velocityY;
@@ -14,10 +16,11 @@
         private Random random = new Random();
         private DateTime lastDirectionChange;
         private int directionChangeInterval = 2000; // Change direction every 2 seconds
+        private int howManyChanges;
 
         // Creates a new enemy at the specified position.
         // The enemy will have a random initial direction.
-        public Enemy(double x, double y) {
+        public Enemy(double x, double y, bool boss = false) {
             X = x;
             Y = y;
             lastDirectionChange = DateTime.Now;
@@ -29,14 +32,26 @@
                  HeightRequest = Size,
                  CornerRadius = Size/2 // Make it circular
              };*/
-            int whichAlien = random.Next(1, 4);
-            string imgSrc = $"alien{whichAlien}.png";
+            string alienImg;
+            if (boss) {
+                alienImg = "monster.png";
+                Size *= 3;
+                speed = 3.5;
+                Health = 4;
+                Points = 50;
+            }
+            else {
+                int whichAlien = random.Next(1, 4);
+                alienImg = $"alien{whichAlien}.png";
+            }
+
             Visual = new Image()
             {
-                Source = imgSrc,
+                Source = alienImg,
                 WidthRequest = Size,
-                HeightRequest = Size,
+                HeightRequest = Size
             };
+            howManyChanges = 0;
 
             // Set random initial direction
             ChangeDirection();
@@ -69,6 +84,9 @@
 
         // Changes the enemy's direction to a new random direction.
         private void ChangeDirection() {
+            // If it has been 10 seconds, increase the enemies speed
+            if (++howManyChanges % 5 == 0)
+                speed += 1;
             // Generate random angle
             double angle = random.NextDouble() * 2 * Math.PI;
 

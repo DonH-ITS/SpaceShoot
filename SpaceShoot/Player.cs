@@ -9,14 +9,6 @@ namespace SpaceShoot
         // public BoxView Visual { get; private set; }
         public Image Visual {  get; private set; }
 
-        public double Rotation
-        {
-            get
-            {
-                return Visual.Rotation;
-            }
-        }
-      
         public Player(double x, double y) {
             X = x;
             Y = y;
@@ -47,7 +39,7 @@ namespace SpaceShoot
 
         // Rotates the player to a specified angle in degrees.
         public void RotatePlayer(double angle) {
-            Visual.Rotation = angle;
+            Visual.Rotation = angle + 90;
         }
     }
 }

@@ -8,7 +8,7 @@ public partial class MainPage : ContentPage
     private IDispatcherTimer enemySpawnTimer;
 
     private int score = 0;
-    private int lives = 3;
+    private int lives = 3, howManyEnemies = 0;
     private bool isGameRunning = false;
 
     private const int MaxBullets = 5;
@@ -23,6 +23,16 @@ public partial class MainPage : ContentPage
         set
         {
             score = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public int Lives
+    {
+        get { return lives; }
+        set
+        {
+            lives = value;
             OnPropertyChanged();
         }
     }
@@ -71,8 +81,9 @@ public partial class MainPage : ContentPage
         if (isGameRunning) return;
 
         isGameRunning = true;
-        score = 0;
-        lives = 3;
+        Score = 0;
+        Lives = 3;
+        howManyEnemies = 0;
         enemies.Clear();
         bullets.Clear();
         GameCanvas.Children.Clear();
@@ -80,8 +91,6 @@ public partial class MainPage : ContentPage
         StartButton.IsEnabled = false;
         gameTimer.Start();
         enemySpawnTimer.Start();
-
-        UpdateUI();
 
         // Create player in center
         player = new Player(canvasWidth / 2, canvasHeight / 2);
@@ -138,12 +147,14 @@ public partial class MainPage : ContentPage
             {
                 if (CheckCollision(bullets[j].X, bullets[j].Y, 13, enemies[i].X, enemies[i].Y, enemies[i].Size))
                 {
-                    GameCanvas.Children.Remove(enemies[i].Visual);
-                    enemies.RemoveAt(i);
                     GameCanvas.Children.Remove(bullets[j].Visual);
                     bullets.RemoveAt(j);
-                    Score += 10;
-                    break;
+                    if (--enemies[i].Health == 0) {
+                        Score += enemies[i].Points;
+                        GameCanvas.Children.Remove(enemies[i].Visual);
+                        enemies.RemoveAt(i);
+                        break;
+                    }    
                 }
             }
 
@@ -181,7 +192,13 @@ public partial class MainPage : ContentPage
         }
 
         Enemy enemy;
-        enemy = new Enemy(x, y);
+        // Every 8th enemy will be a boss
+        if (++howManyEnemies % 8 == 0) {
+            enemy = new Enemy(x, y, true);
+        }
+        else {
+            enemy = new Enemy(x, y);
+        }
         enemies.Add(enemy);
         GameCanvas.Children.Add(enemy.Visual);
         AbsoluteLayout.SetLayoutBounds(enemy.Visual,
@@ -251,7 +268,7 @@ public partial class MainPage : ContentPage
         AbsoluteLayout.SetLayoutBounds(bullet.Visual,
             new Rect(bullet.X - 3, bullet.Y - 10, 6, 20));
         double angle = Math.Atan2(dy, dx) * 180 / Math.PI;
-        player.RotatePlayer(angle + 90);
+        player.RotatePlayer(angle);
     }
 
     private bool CheckCollision(double x1, double y1, double size1,
@@ -261,17 +278,14 @@ public partial class MainPage : ContentPage
     }
 
     private void LoseLife() {
-        lives--;
-        UpdateUI();
+        Lives--;
 
-        if (lives <= 0) {
+        if (Lives <= 0) {
             EndGame();
         }
     }
 
-    private void UpdateUI() {
-        LivesLabel.Text = $"Lives : {lives}";
-    }
+
 
     private void EndGame() {
         isGameRunning = false;
@@ -279,6 +293,14 @@ public partial class MainPage : ContentPage
         enemySpawnTimer?.Stop();
 
         GameOverOverlay.IsVisible = true;
+        int highScore = Preferences.Get("HighScore", 0);
+        if (Score > highScore) {
+            HighScoreLbl.Text = $"Congratulations! New High Score: {Score}";
+            Preferences.Set("HighScore", Score);
+        }
+        else {
+            HighScoreLbl.Text = $"You failed to beat the high score! {highScore}";
+        }
     }
 
     private void OnPlayAgainClicked(object sender, EventArgs e) {

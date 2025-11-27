@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Label x:Name="ScoreLabel" 
+            <Label 
                    Text="{Binding Score, StringFormat='Score : {0}'}" 
                    TextColor="White" 
                    FontSize="20" 
@@ -41,9 +41,9 @@
                     WidthRequest="100"
                     Clicked="OnStartClicked"/>
 
-            <Label x:Name="LivesLabel" 
+            <Label 
                    Grid.Column="2"
-                   Text="Lives: 3" 
+                   Text="{Binding Lives, StringFormat='Lives : {0}'}" 
                    TextColor="Red" 
                    FontSize="20" 
                    FontAttributes="Bold"
@@ -68,6 +68,11 @@
                 <Label Text="GAME OVER" 
                        TextColor="Red" 
                        FontSize="48" 
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                <Label x:Name="HighScoreLbl" 
+                       TextColor="White"
+                       FontSize="24"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>
                 <Button Text="PLAY AGAIN"
