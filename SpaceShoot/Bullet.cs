@@ -22,13 +22,16 @@
                 Color = Colors.Yellow, 
                 CornerRadius = 3
             };
+            velocityX = directionX*speed;
+            velocityY = directionY*speed;
         }
 
 
         // Updates the bullet's position. Should be called every frame.
         // The bullet moves in a straight line at constant speed.
         public void Update() {
-
+            X += velocityX;
+            Y += velocityY;
         }
 
 

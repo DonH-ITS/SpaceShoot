@@ -40,6 +40,9 @@ public partial class MainPage : ContentPage
         GameCanvas.GestureRecognizers.Add(panGesture);
 
         // Keep tap gesture for shooting
+        var tapGesture = new TapGestureRecognizer();
+        tapGesture.Tapped += OnCanvasTapped;
+        GameCanvas.GestureRecognizers.Add(tapGesture);
 
         // Setup game loop timer using DispatcherTimer (60 FPS)
         gameTimer = Dispatcher.CreateTimer();
