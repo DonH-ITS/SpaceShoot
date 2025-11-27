@@ -23,6 +23,9 @@
                 Color = Colors.Yellow, 
                 CornerRadius = 3
             };
+
+            double angle = Math.Atan2(directionY, directionX) * 180 / Math.PI;
+            Visual.Rotation = angle + 90;
         }
 
 
